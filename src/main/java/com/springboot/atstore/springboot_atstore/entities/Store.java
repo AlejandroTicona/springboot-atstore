@@ -35,6 +35,10 @@ public class Store {
         this.openingHours = openingHours;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Long getId() {
         return id;
     }

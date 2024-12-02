@@ -1,17 +1,23 @@
 package com.springboot.atstore.springboot_atstore.entities;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -22,7 +28,6 @@ public class Order {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "store_id")
-    @JsonIgnore
     private Store store;
     @Column(name = "name")
     private String name;
@@ -32,19 +37,25 @@ public class Order {
     private String shippingAddress;
     @Column(name = "is_delivery")
     private Boolean idDelivery;
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
+    private List<DetailsOrder> detailsOrders = new ArrayList<>();
     @Embedded
     private Audit audit = new Audit();
 
     public Order() {
     }
 
-    public Order(Long id, Store store, String name, LocalDate date, String shippingAddress, Boolean idDelivery) {
+    public Order(Long id, Store store, String name, LocalDate date, String shippingAddress, Boolean idDelivery,
+            List<DetailsOrder> detailsOrders, Audit audit) {
         this.id = id;
         this.store = store;
         this.name = name;
         this.date = date;
         this.shippingAddress = shippingAddress;
         this.idDelivery = idDelivery;
+        this.detailsOrders = detailsOrders;
+        this.audit = audit;
     }
 
     public Long getId() {
@@ -95,6 +106,14 @@ public class Order {
         this.idDelivery = idDelivery;
     }
 
+    public List<DetailsOrder> getDetailsOrders() {
+        return detailsOrders;
+    }
+
+    public void setDetailsOrders(List<DetailsOrder> detailsOrders) {
+        this.detailsOrders = detailsOrders;
+    }
+
     public Audit getAudit() {
         return audit;
     }
@@ -105,8 +124,12 @@ public class Order {
 
     @Override
     public String toString() {
-        return "Orders [id=" + id + ", store=" + store + ", name=" + name + ", date=" + date + ", shippingAddress="
+        return "Order [id=" + id + ", store=" + store + ", name=" + name + ", date=" + date + ", shippingAddress="
                 + shippingAddress + ", idDelivery=" + idDelivery + ", audit=" + audit + "]";
     }
+
+    
+
+    
 
 }

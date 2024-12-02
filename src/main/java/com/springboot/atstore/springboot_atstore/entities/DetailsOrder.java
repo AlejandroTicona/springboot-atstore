@@ -1,5 +1,6 @@
 package com.springboot.atstore.springboot_atstore.entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -17,6 +18,7 @@ public class DetailsOrder {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
+    @JsonBackReference
     private Order order;
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
@@ -36,6 +38,10 @@ public class DetailsOrder {
 
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public Order getOrder() {
@@ -60,6 +66,11 @@ public class DetailsOrder {
 
     public void setQuantity(Integer quantity) {
         this.quantity = quantity;
+    }
+
+    @Override
+    public String toString() {
+        return "DetailsOrder [id=" + id + ", product=" + product + ", quantity=" + quantity + "]";
     }
 
 }
