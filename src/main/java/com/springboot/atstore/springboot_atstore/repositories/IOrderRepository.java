@@ -1,5 +1,6 @@
 package com.springboot.atstore.springboot_atstore.repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -11,4 +12,6 @@ import com.springboot.atstore.springboot_atstore.entities.Order;
 public interface IOrderRepository extends JpaRepository<Order, Long> {
     @Query("SELECT o FROM Order o JOIN FETCH o.detailsOrders WHERE o.id = :id")
     Optional<Order> findOrderWithDetailsById(@Param("id") Long id);
+
+    List<Order> findByStoreId(Long storeId);
 }

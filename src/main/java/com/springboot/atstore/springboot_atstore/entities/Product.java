@@ -1,5 +1,8 @@
 package com.springboot.atstore.springboot_atstore.entities;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -19,7 +22,8 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = true) 
+    @OnDelete(action = OnDeleteAction.SET_NULL)
     private Category category;
     @Column(name = "name")
     private String name;

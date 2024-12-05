@@ -6,14 +6,20 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import com.springboot.atstore.springboot_atstore.entities.Category;
+import com.springboot.atstore.springboot_atstore.entities.Product;
 import com.springboot.atstore.springboot_atstore.repositories.ICategoryRepository;
+import com.springboot.atstore.springboot_atstore.repositories.IProductRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class CategoryService {
     private final ICategoryRepository categoryRepository;
+    private final IProductRepository productRepository;
 
-    public CategoryService(ICategoryRepository categoryRepository) {
+    public CategoryService(ICategoryRepository categoryRepository, IProductRepository productRepository) {
         this.categoryRepository = categoryRepository;
+        this.productRepository = productRepository;
     }
 
     public List<Category> getAllCategories() {
@@ -28,8 +34,18 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-    public void deleteCategory(Long id) {
-        categoryRepository.deleteById(id);
 
+    public void deleteCategory(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Category not found with id: " + id));
+
+        List<Product> products = productRepository.findByCategoryId(id);
+        for (Product product : products) {
+            product.setCategory(null);
+            productRepository.save(product);
+        }
+
+        // Ahora elimina la tienda
+        categoryRepository.delete(category);
     }
 }
